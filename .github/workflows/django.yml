@@ -1,0 +1,76 @@
+name: Lint with ruff and djlint
+
+on:
+  push:
+    branches: [ main, master, dev ]
+  pull_request:
+    branches: [ main, master, dev ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff djlint
+
+    - name: Run ruff check
+      run: |
+        ruff check --output-format=github .
+
+    - name: Run ruff format check
+      run: |
+        ruff format --check .
+
+    - name: Run djlint check
+      run: |
+        djlint . --check
+
+    - name: Run djlint format check
+      run: |
+        djlint . --check --format
+
+  auto-fix:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff djlint
+
+    - name: Auto-fix with ruff
+      run: |
+        ruff check --fix .
+        ruff format .
+
+    - name: Auto-fix with djlint
+      run: |
+        djlint . --reformat
+
+    - name: Create fix commit
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Apply automatic linting fixes" || exit 0
+        git push
