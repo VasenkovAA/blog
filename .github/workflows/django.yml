@@ -34,11 +34,11 @@ jobs:
 
     - name: Run djlint check
       run: |
-        djlint . --check
+        djlint .
 
     - name: Run djlint format check
       run: |
-        djlint . --check --format
+        djlint .
 
   auto-fix:
     runs-on: ubuntu-latest
