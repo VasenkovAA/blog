@@ -7,6 +7,10 @@ app_name = "blog"
 
 urlpatterns = [
     path("", index, name="index"),
-    path("blog/<int:id>/", post_detail, name="post_detail"),
     path("blog/list/", post_list, name="post_list"),
+    path(
+        "blog/<int:year>/<int:month>/<int:day>/<slug:post>/",
+        post_detail,
+        name="post_detail",
+    ),
 ]
