@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from taggit.managers import TaggableManager
 
 
 class Project(models.Model):
@@ -27,6 +28,7 @@ class Project(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="blog_projects"
     )
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = "Проект"

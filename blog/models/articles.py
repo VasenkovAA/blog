@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 
 
 class ArticleGroup(models.Model):
@@ -35,6 +36,7 @@ class Article(models.Model):
         auto_now_add=True,
         verbose_name="Дата создания",
     )
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = "Статья"
