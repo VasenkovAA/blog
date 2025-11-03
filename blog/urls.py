@@ -1,7 +1,7 @@
 from django.urls import path
 
 from blog.views.index import index
-from blog.views.post import post_detail, post_list
+from blog.views.post import post_comment, post_detail, post_list
 
 app_name = "blog"
 
@@ -13,4 +13,5 @@ urlpatterns = [
         post_detail,
         name="post_detail",
     ),
+    path("blog/<int:post_id>/comment/", post_comment, name="post_comment"),
 ]
