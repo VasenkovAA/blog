@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -7,13 +8,19 @@ from taggit.managers import TaggableManager
 
 class Post(models.Model):
     class Status(models.TextChoices):
-        DRAFT = "DF", "Draft"
-        PUBLISHED = "PB", "Published"
+        DRAFT = "draft", "Draft"
+        PUBLISHED = "published", "Published"
+
+    def validate_slug(value):
+        if " " in value:
+            raise ValidationError("Slug не может содержать пробелы")
 
     title = models.CharField(max_length=250)
-    slug = models.SlugField(max_length=250, unique_for_date="publish")
+    slug = models.SlugField(
+        max_length=250, unique_for_date="publish", validators=[validate_slug]
+    )
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="blog_posts"
+        get_user_model(), on_delete=models.CASCADE, related_name="blog_posts"
     )
 
     body = models.TextField()
@@ -21,7 +28,7 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(
-        max_length=2,
+        max_length=10,
         choices=Status.choices,
         default=Status.DRAFT,
     )
@@ -30,7 +37,7 @@ class Post(models.Model):
     class Meta:
         ordering = ["-publish"]
         indexes = [
-            models.Index(fields=["-publish"]),
+            models.Index(fields=["-publish", "status"]),
         ]
 
     def __str__(self):
@@ -39,7 +46,12 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse(
             "blog:post_detail",
-            args=[self.publish.year, self.publish.month, self.publish.day, self.slug],
+            kwargs={
+                "year": self.publish.year,
+                "month": self.publish.month,
+                "day": self.publish.day,
+                "post": self.slug,
+            },
         )
 
 
@@ -60,3 +72,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"Comment by {self.name} on {self.post}"
+
+    @classmethod
+    def get_active_comments(cls):
+        return cls.objects.select_related("post").filter(active=True)
