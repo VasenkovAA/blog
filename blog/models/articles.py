@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 from taggit.managers import TaggableManager
 
 
@@ -17,31 +20,45 @@ class ArticleGroup(models.Model):
 
 
 class Article(models.Model):
-    name = models.CharField(
-        max_length=100,
-        verbose_name="Название статьи",
+    class Status(models.TextChoices):
+        DRAFT = "draft", "Draft"
+        PUBLISHED = "published", "Published"
+
+    def validate_slug(value):
+        if " " in value:
+            raise ValidationError("Slug не может содержать пробелы")
+
+    title = models.CharField(max_length=250)
+    slug = models.SlugField(
+        max_length=250, unique_for_date="publish", validators=[validate_slug]
     )
-    description = models.TextField(
-        verbose_name="Описание статьи",
-        blank=True,
-        null=True,
+    author = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="blog_article"
+    )
+
+    body = models.TextField()
+    publish = models.DateTimeField(default=timezone.now)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        max_length=10,
+        choices=Status.choices,
+        default=Status.DRAFT,
     )
     group = models.ForeignKey(
         ArticleGroup,
-        on_delete=models.PROTECT,
-        verbose_name="Группа",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name="articles",
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name="Дата создания",
+        verbose_name="Группа статей",
     )
     tags = TaggableManager()
 
     class Meta:
         verbose_name = "Статья"
         verbose_name_plural = "Статьи"
-        ordering = ["-created_at"]
+        ordering = ["-created"]
 
     def __str__(self):
-        return self.name
+        return self.title
