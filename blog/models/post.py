@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from mdeditor.fields import MDTextField
 from taggit.managers import TaggableManager
 
 
@@ -23,7 +24,7 @@ class Post(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name="blog_posts"
     )
 
-    body = models.TextField()
+    content = MDTextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -32,7 +33,7 @@ class Post(models.Model):
         choices=Status.choices,
         default=Status.DRAFT,
     )
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     class Meta:
         ordering = ["-publish"]

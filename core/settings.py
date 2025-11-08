@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "blog",
     "taggit",
+    "mdeditor",
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,5 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+X_FRAME_OPTIONS = "SAMEORIGIN"

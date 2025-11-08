@@ -1,10 +1,11 @@
 {% extends "base.html" %}
+{% load markdown_extras %}
 {% block title %}
     {{ post.title }}
 {% endblock title %}
 {% block content %}
     <h1>{{ post.title }}</h1>
-    {{ post.body|linebreaks }}
+    {{ post.content|render_markdown }}
     <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
     {% with comments.count as total_comments %}
         <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
@@ -15,7 +16,7 @@
                 Comment {{ forloop.counter }} by {{ comment.name }}
                 {{ comment.created }}
             </p>
-            {{ comment.body|linebreaks }}
+            {{ comment.content|render_markdown }}
         </div>
     {% empty %}
         <p>There are no comments.</p>
