@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}
-    My Blog
+    Последние новости
 {% endblock title %}
 {% block content %}
-    <h1>My Blog</h1>
+    <h1>Последние новости</h1>
     {% if tag %}<h2>Posts tagged with "{{ tag.name }}"</h2>{% endif %}
     {% for post in posts %}
         <h2>
