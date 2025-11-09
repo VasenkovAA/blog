@@ -23,6 +23,7 @@ jsbeautifier==1.15.4
 json5==0.12.1
 langdetect==1.0.9
 Markdown==3.10
+minio==7.2.18
 nodeenv==1.9.1
 pathspec==0.12.1
 pillow==12.0.0
