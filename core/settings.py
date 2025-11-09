@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "blog",
     "taggit",
     "mdeditor",
+    "django_minio_backend",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,34 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
+MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
+MINIO_USE_HTTPS = os.getenv("MINIO_USE_HTTPS", "False").lower() == "true"
+MINIO_MEDIA_BUCKET = os.getenv("MINIO_MEDIA_BUCKET", "django-media")
+MINIO_STATIC_BUCKET = os.getenv("MINIO_STATIC_BUCKET", "django-static")
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django_minio_backend.models.MinioBackend",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": MINIO_ENDPOINT,
+            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
+            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
+            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
+            "MINIO_PRIVATE_BUCKETS": [MINIO_MEDIA_BUCKET],
+            "MINIO_PUBLIC_BUCKETS": [MINIO_STATIC_BUCKET],
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django_minio_backend.models.MinioBackendStatic",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": MINIO_ENDPOINT,
+            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
+            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
+            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
+            "MINIO_STATIC_FILES_BUCKET": MINIO_STATIC_BUCKET,
+        },
+    },
+}
