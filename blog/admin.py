@@ -21,6 +21,7 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = "publish"
     ordering = ["status", "publish"]
     formfield_overrides = {models.TextField: {"widget": MDEditorWidget}}
+    autocomplete_fields = ["author"]
 
 
 @admin.register(Comment)
