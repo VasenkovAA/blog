@@ -15,7 +15,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(".env.dev")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -140,7 +140,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
+MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
 MINIO_USE_HTTPS = os.getenv("MINIO_USE_HTTPS", "False").lower() == "true"
@@ -149,7 +149,7 @@ MINIO_STATIC_BUCKET = os.getenv("MINIO_STATIC_BUCKET", "django-static")
 
 STORAGES = {
     "default": {
-        "BACKEND": "django_minio_backend.models.MinioBackend",
+        "BACKEND": "core.storage_backends.CustomMinioBackend",
         "OPTIONS": {
             "MINIO_ENDPOINT": MINIO_ENDPOINT,
             "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
@@ -157,16 +157,21 @@ STORAGES = {
             "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
             "MINIO_PRIVATE_BUCKETS": [MINIO_MEDIA_BUCKET],
             "MINIO_PUBLIC_BUCKETS": [MINIO_STATIC_BUCKET],
+            "MINIO_BUCKET_CHECK_ON_SAVE": True,
         },
     },
     "staticfiles": {
-        "BACKEND": "django_minio_backend.models.MinioBackendStatic",
+        "BACKEND": "core.storage_backends.CustomMinioBackendStatic",
         "OPTIONS": {
             "MINIO_ENDPOINT": MINIO_ENDPOINT,
             "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
             "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
             "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
             "MINIO_STATIC_FILES_BUCKET": MINIO_STATIC_BUCKET,
+            "MINIO_BUCKET_CHECK_ON_SAVE": True,
         },
     },
 }
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")

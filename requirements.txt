@@ -18,6 +18,7 @@ djangorestframework_simplejwt==5.5.1
 djlint==1.36.4
 EditorConfig==0.17.1
 filelock==3.20.0
+gunicorn==23.0.0
 identify==2.6.15
 jsbeautifier==1.15.4
 json5==0.12.1
@@ -25,6 +26,7 @@ langdetect==1.0.9
 Markdown==3.10
 minio==7.2.18
 nodeenv==1.9.1
+packaging==25.0
 pathspec==0.12.1
 pillow==12.0.0
 platformdirs==4.5.0
@@ -43,3 +45,5 @@ tqdm==4.67.1
 typing_extensions==4.15.0
 urllib3==2.5.0
 virtualenv==20.35.4
+django-storages==1.14.6
+boto3  # Для S3/MinIO
