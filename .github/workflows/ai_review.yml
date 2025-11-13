@@ -1,20 +1,18 @@
 name: 🤖 AI Review
 
-on:
-  - pull_request
+on: [pull_request]
+  workflow_dispatch:
+    inputs:
+      review-command:
+        type: choice
+        default: "run"
+        options: [ run, run-inline, run-context, run-summary ]
+        description: "Какой тип ревью запустить"
 
-workflow_dispatch:
-  inputs:
-    review-command:
-      type: choice
-      default: "run"
-      options: [ run, run-inline, run-context, run-summary ]
-      description: "Какой тип ревью запустить"
-
-    pull-request-number:
-      type: string
-      required: true
-      description: "Номер Pull Request"
+      pull-request-number:
+        type: string
+        required: true
+        description: "Номер Pull Request"
 
 jobs:
   ai-review:
@@ -25,9 +23,7 @@ jobs:
     services:
       ollama:
         image: ollama/ollama:latest
-        ports:
-         - "11434:11434"
-
+        ports: [ 11434:11434 ]
 
     steps:
       # 1️⃣ Клонируем репозиторий
