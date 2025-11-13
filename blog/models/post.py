@@ -6,6 +6,8 @@ from django.utils import timezone
 from mdeditor.fields import MDTextField
 from taggit.managers import TaggableManager
 
+from blog.storages import get_private_storage
+
 
 class Post(models.Model):
     class Status(models.TextChoices):
@@ -34,6 +36,8 @@ class Post(models.Model):
         default=Status.DRAFT,
     )
     tags = TaggableManager(blank=True)
+
+    preview = models.FileField(storage=get_private_storage, blank=True)
 
     class Meta:
         ordering = ["-publish"]
