@@ -30,9 +30,10 @@ repos:
       - id: isort
         args: ["--profile", "black"]
 
-hooks:
-      - id: script
-        name: script #название stage
-        entry: python manage.py check # наш скрипт
-        language: python #язык, на котором написан скрипт
-        pass_filenames: false # нужно ли запускать этот скрипт на каждом файле
+  - repo: local
+    hooks:
+      - id: migrations
+        name: check migrations
+        entry: python manage.py check
+        language: python
+        files: \.py$
