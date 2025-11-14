@@ -37,3 +37,20 @@ repos:
         entry: python manage.py check
         language: python
         files: \.py$
+
+  - repo: local
+    hooks:
+
+      - id: generate_tree
+        name: generate tree
+        entry: >
+          bash -c "tree-generator -o ./auto/project_structure.txt"
+        language: system
+
+      - id: file_merger
+        name: merge files
+        entry: >
+          bash -c "file-merger -d ./blog/models -o ./auto/all_models.txt &&
+          file-merger -d ./blog/templates -r -o ./auto/all_templates.txt &&
+          file-merger -d ./blog/views -o ./auto/all_views.txt"
+        language: system

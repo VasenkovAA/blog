@@ -5,7 +5,7 @@ certifi==2025.10.5
 cffi==2.0.0
 cfgv==3.4.0
 click==8.3.0
-codingutils @ git+https://github.com/VasenkovAA/CodingUtils.git@92fe05bc1b1f8cdee4456fb659f8d28b55b29868
+codingutils @ git+https://github.com/VasenkovAA/CodingUtils.git
 colorama==0.4.6
 cssbeautifier==1.15.4
 distlib==0.4.0
