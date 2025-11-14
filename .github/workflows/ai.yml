@@ -1,6 +1,7 @@
 name: 🤖 AI Review
 
-on: [pull_request]
+on:
+  pull_request:
   workflow_dispatch:
     inputs:
       review-command:
@@ -8,11 +9,11 @@ on: [pull_request]
         default: "run"
         options: [ run, run-inline, run-context, run-summary ]
         description: "Какой тип ревью запустить"
-
       pull-request-number:
         type: string
         required: true
         description: "Номер Pull Request"
+
 
 jobs:
   ai-review:
