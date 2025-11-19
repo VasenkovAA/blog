@@ -7,6 +7,8 @@ from mdeditor.fields import MDTextField
 from taggit.managers import TaggableManager
 
 from blog.storages import get_private_storage
+from blog.utils.html_safety import safe_markdown_to_html, safe_text_to_html
+from blog.validators.file_validators import FileSizeValidator, validate_image_extension
 
 
 class Post(models.Model):
@@ -37,7 +39,15 @@ class Post(models.Model):
     )
     tags = TaggableManager(blank=True)
 
-    preview = models.FileField(storage=get_private_storage, blank=True)
+    preview = models.FileField(
+        storage=get_private_storage,
+        blank=True,
+        validators=[
+            FileSizeValidator(max_size=5 * 1024 * 1024),  # 5MB
+            validate_image_extension,
+        ],
+        help_text="Разрешены файлы JPEG, PNG, GIF, BMP, WebP до 5MB",
+    )
 
     class Meta:
         ordering = ["-publish"]
@@ -58,6 +68,19 @@ class Post(models.Model):
                 "post": self.slug,
             },
         )
+
+    def get_safe_content(self):
+        """
+        Возвращает безопасный HTML контент
+        """
+        return safe_markdown_to_html(self.content)
+
+    def get_content_preview(self, length=150):
+        """
+        Возвращает безопасный превью контента
+        """
+        preview = self.content[:length] + ("..." if len(self.content) > length else "")
+        return safe_text_to_html(preview)
 
 
 class Comment(models.Model):
@@ -81,3 +104,9 @@ class Comment(models.Model):
     @classmethod
     def get_active_comments(cls):
         return cls.objects.select_related("post").filter(active=True)
+
+    def get_safe_body(self):
+        """
+        Возвращает безопасный HTML тела комментария
+        """
+        return safe_text_to_html(self.body)

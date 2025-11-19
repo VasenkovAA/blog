@@ -34,8 +34,9 @@ repos:
     hooks:
       - id: migrations
         name: check migrations
-        entry: python manage.py check
+        entry: venv/bin/python manage.py makemigrations --check --dry-run --no-input
         language: python
+        pass_filenames: false
         files: \.py$
 
   - repo: local
