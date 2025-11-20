@@ -15,7 +15,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(".env")
+dotenv_path = os.getenv("ENVIRONMENT_FILE")
+load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", False) == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "web", "nginx"]
 
 
 # Application definition
@@ -88,14 +89,14 @@ DATABASES = {
     }
 }
 
-if os.getenv("POSTGRES_DB"):
+if os.getenv("USE_POSTGRES_DB"):
     DATABASES["default"] = {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
     }
 
 
@@ -148,6 +149,7 @@ MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
 MINIO_USE_HTTPS = os.getenv("MINIO_USE_HTTPS", "False").lower() == "true"
 MINIO_MEDIA_BUCKET = os.getenv("MINIO_MEDIA_BUCKET", "django-media")
 MINIO_STATIC_BUCKET = os.getenv("MINIO_STATIC_BUCKET", "django-static")
+MINIO_EXTERNAL_ENDPOINT = os.getenv("MINIO_EXTERNAL_ENDPOINT", "localhost:9000")
 
 STORAGES = {
     "default": {
@@ -177,3 +179,28 @@ STORAGES = {
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+    "http://0.0.0.0:8080",
+    "http://web:8000",
+    "http://minio:9000",
+    "http://minio:9001",
+]
+# Убедитесь, что эти настройки корректны
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+
+# Важные настройки для работы за прокси
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+
+# Убедитесь, что эти настройки есть
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_NAME = "csrftoken"
+SITE_ID = 1
