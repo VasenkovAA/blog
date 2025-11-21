@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 dotenv_path = os.getenv("ENVIRONMENT_FILE")
@@ -27,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", False) == "True"
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0", "web", "nginx"]
 
@@ -188,19 +189,34 @@ CSRF_TRUSTED_ORIGINS = [
     "http://minio:9000",
     "http://minio:9001",
 ]
-# Убедитесь, что эти настройки корректны
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SECURE = False
+
+CSRF_COOKIE_SECURE = False  # True in prod
+CSRF_COOKIE_HTTPONLY = False  # True in prod
+SESSION_COOKIE_SECURE = False  # True in prod
 CSRF_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SAMESITE = "Lax"
 
-
-# Важные настройки для работы за прокси
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
 
-# Убедитесь, что эти настройки есть
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_NAME = "csrftoken"
 SITE_ID = 1
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+MINIO_CONFIG = {
+    "endpoint": os.getenv("MINIO_ENDPOINT"),
+    "access_key": os.getenv("MINIO_ACCESS_KEY"),
+    "secret_key": os.getenv("MINIO_SECRET_KEY"),
+    "secure": os.getenv("MINIO_USE_HTTPS", "False").lower() == "true",
+}
+for key in ["endpoint", "access_key", "secret_key"]:
+    if not MINIO_CONFIG[key]:
+        raise ImproperlyConfigured(f"MinIO {key} must be set")

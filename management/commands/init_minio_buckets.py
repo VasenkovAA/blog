@@ -1,3 +1,4 @@
+import os
 import sys
 import time
 
@@ -6,18 +7,18 @@ from minio import Minio
 
 
 def init_minio():
-    """Простой скрипт инициализации MinIO"""
+    endpoint = os.getenv("MINIO_ENDPOINT", "minio:9000")
+    access_key = os.getenv("MINIO_ACCESS_KEY")
+    secret_key = os.getenv("MINIO_SECRET_KEY")
 
-    # Параметры подключения
-    endpoint = "minio:9000"  # Внутри Docker сети
-    access_key = "minioadmin"
-    secret_key = "minioadminpassword"
+    if not all([access_key, secret_key]):
+        print("❌ Missing MinIO credentials")
+        return False
 
     print("🔧 Initializing MinIO buckets...")
     print(f"   Endpoint: {endpoint}")
     print(f"   Access Key: {access_key}")
 
-    # Ждем пока MinIO станет доступным
     print("⏳ Waiting for MinIO to be ready...")
     for i in range(30):
         response = requests.get("http://minio:9000/minio/health/live", timeout=5)
@@ -29,13 +30,11 @@ def init_minio():
             return False
         time.sleep(2)
 
-    # Создаем клиент MinIO
     try:
         client = Minio(
             endpoint, access_key=access_key, secret_key=secret_key, secure=False
         )
 
-        # Создаем бакеты
         buckets = ["django-static", "django-media"]
 
         for bucket in buckets:
@@ -43,7 +42,6 @@ def init_minio():
                 client.make_bucket(bucket)
                 print(f"✅ Created bucket: {bucket}")
 
-                # Для статического бакета устанавливаем публичный доступ
                 if bucket == "django-static":
                     policy = {
                         "Version": "2012-10-17",
