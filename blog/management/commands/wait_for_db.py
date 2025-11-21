@@ -1,4 +1,3 @@
-# management/commands/wait_for_db.py
 import time
 
 from django.core.management.base import BaseCommand
