@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.db import models
+from django.utils.html import format_html
 from mdeditor.widgets import MDEditorWidget
 
 from blog.models.post import Comment, Post
@@ -21,6 +22,15 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = "publish"
     ordering = ["status", "publish"]
     formfield_overrides = {models.TextField: {"widget": MDEditorWidget}}
+    autocomplete_fields = ["author"]
+
+    def preview_tag(self, obj):
+        if obj.preview:
+            url = obj.preview.url
+            return format_html('<a href="{}" target="_blank">Скачать</a>', url)
+        return "Нет файла"
+
+    preview_tag.short_description = "Предпросмотр"
 
 
 @admin.register(Comment)

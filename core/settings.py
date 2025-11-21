@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
-load_dotenv()
+dotenv_path = os.getenv("ENVIRONMENT_FILE")
+load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +28,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG", False) == "True"
+DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Application definition
 
@@ -43,6 +44,9 @@ INSTALLED_APPS = [
     "blog",
     "taggit",
     "mdeditor",
+    "django_minio_backend",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
 ]
 
 MIDDLEWARE = [
@@ -84,6 +88,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+if os.getenv("USE_POSTGRES_DB"):
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    }
 
 
 # Password validation
@@ -128,3 +142,80 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
+
+MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
+MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
+MINIO_USE_HTTPS = os.getenv("MINIO_USE_HTTPS", "False").lower() == "true"
+MINIO_MEDIA_BUCKET = os.getenv("MINIO_MEDIA_BUCKET", "django-media")
+MINIO_STATIC_BUCKET = os.getenv("MINIO_STATIC_BUCKET", "django-static")
+MINIO_EXTERNAL_ENDPOINT = os.getenv("MINIO_EXTERNAL_ENDPOINT", "localhost:9000")
+
+STORAGES = {
+    "default": {
+        "BACKEND": "core.storage_backends.CustomMinioBackend",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": MINIO_ENDPOINT,
+            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
+            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
+            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
+            "MINIO_PRIVATE_BUCKETS": [MINIO_MEDIA_BUCKET],
+            "MINIO_PUBLIC_BUCKETS": [MINIO_STATIC_BUCKET],
+            "MINIO_BUCKET_CHECK_ON_SAVE": True,
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "core.storage_backends.CustomMinioBackendStatic",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": MINIO_ENDPOINT,
+            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
+            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
+            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
+            "MINIO_STATIC_FILES_BUCKET": MINIO_STATIC_BUCKET,
+            "MINIO_BUCKET_CHECK_ON_SAVE": True,
+        },
+    },
+}
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+    "http://0.0.0.0:8080",
+    "http://web:8000",
+    "http://minio:9000",
+    "http://minio:9001",
+]
+
+CSRF_COOKIE_SECURE = False  # True in prod
+CSRF_COOKIE_HTTPONLY = False  # True in prod
+SESSION_COOKIE_SECURE = False  # True in prod
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+
+CSRF_USE_SESSIONS = False
+CSRF_COOKIE_NAME = "csrftoken"
+SITE_ID = 1
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+MINIO_CONFIG = {
+    "endpoint": os.getenv("MINIO_ENDPOINT"),
+    "access_key": os.getenv("MINIO_ACCESS_KEY"),
+    "secret_key": os.getenv("MINIO_SECRET_KEY"),
+    "secure": os.getenv("MINIO_USE_HTTPS", "False").lower() == "true",
+}
+for key in ["endpoint", "access_key", "secret_key"]:
+    if not MINIO_CONFIG[key]:
+        raise ImproperlyConfigured(f"MinIO {key} must be set")
