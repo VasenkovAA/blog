@@ -7,8 +7,8 @@ class BackupLog(models.Model):
     message = models.TextField(blank=True)
 
     class Meta:
-        verbose_name = "Резервная копия"
-        verbose_name_plural = "Резервные копии БД"
+        verbose_name = 'Резервная копия'
+        verbose_name_plural = 'Резервные копии БД'
 
     def __str__(self):
-        return f"Backup {self.created_at}"
+        return f'Backup {self.created_at}'

@@ -18,37 +18,37 @@ from blog.models.projects import Project
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ["name", "created_at"]
+    list_display = ['name', 'created_at']
 
 
 @admin.register(BackupLog)
 class BackupLogAdmin(admin.ModelAdmin):
-    list_display = ("created_at", "success", "message")
-    readonly_fields = ("created_at", "success", "message")
-    actions = ["create_backup_action"]
+    list_display = ('created_at', 'success', 'message')
+    readonly_fields = ('created_at', 'success', 'message')
+    actions = ['create_backup_action']
 
-    @admin.action(description="Создать новый бэкап базы данных сейчас")
+    @admin.action(description='Создать новый бэкап базы данных сейчас')
     def create_backup_action(self, request, queryset):
-        pg_dump_path = shutil.which("pg_dump")
-        env_path = os.environ.get("PATH", "PATH not set")
+        pg_dump_path = shutil.which('pg_dump')
+        env_path = os.environ.get('PATH', 'PATH not set')
 
-        print("--- DEBUG START ---")
-        print(f"PG_DUMP PATH: {pg_dump_path}")
-        print(f"SYSTEM PATH: {env_path}")
+        print('--- DEBUG START ---')
+        print(f'PG_DUMP PATH: {pg_dump_path}')
+        print(f'SYSTEM PATH: {env_path}')
 
         log_buffer = io.StringIO()
         success = False
 
         try:
             if not pg_dump_path:
-                raise Exception(f"CRITICAL: pg_dump не найден! PATH: {env_path}")
+                raise Exception(f'CRITICAL: pg_dump не найден! PATH: {env_path}')
 
-            print("Запуск dbbackup...")
-            call_command("dbbackup", "--noinput", stdout=log_buffer, stderr=log_buffer)
+            print('Запуск dbbackup...')
+            call_command('dbbackup', '--noinput', stdout=log_buffer, stderr=log_buffer)
 
-            print("Команда выполнена.")
+            print('Команда выполнена.')
             success = True
-            result_msg = f"SUCCESS LOG:\n{log_buffer.getvalue()}"
+            result_msg = f'SUCCESS LOG:\n{log_buffer.getvalue()}'
 
         except BaseException as e:
             success = False
@@ -56,29 +56,29 @@ class BackupLogAdmin(admin.ModelAdmin):
             captured_log = log_buffer.getvalue()
 
             result_msg = (
-                f"ERROR: {str(e)}\n"
-                f"TYPE: {type(e)}\n"
-                f"PG_DUMP LOCATION: {pg_dump_path}\n"
-                f"CAPTURED LOGS:\n{captured_log}\n"
-                f"TRACEBACK:\n{tb}"
+                f'ERROR: {str(e)}\n'
+                f'TYPE: {type(e)}\n'
+                f'PG_DUMP LOCATION: {pg_dump_path}\n'
+                f'CAPTURED LOGS:\n{captured_log}\n'
+                f'TRACEBACK:\n{tb}'
             )
-            print(f"--- CAUGHT EXCEPTION ---\n{result_msg}")
+            print(f'--- CAUGHT EXCEPTION ---\n{result_msg}')
 
         try:
             BackupLog.objects.create(success=success, message=result_msg)
             if success:
-                self.message_user(request, "Бэкап создан!", messages.SUCCESS)
+                self.message_user(request, 'Бэкап создан!', messages.SUCCESS)
             else:
-                self.message_user(request, "Ошибка! См. лог в таблице.", messages.ERROR)
+                self.message_user(request, 'Ошибка! См. лог в таблице.', messages.ERROR)
         except Exception as db_err:
-            print(f"Ошибка при сохранении лога в БД: {db_err}")
+            print(f'Ошибка при сохранении лога в БД: {db_err}')
             self.message_user(
                 request,
-                "Бэкап упал, и лог не сохранился. Смотри консоль Docker.",
+                'Бэкап упал, и лог не сохранился. Смотри консоль Docker.',
                 messages.ERROR,
             )
 
-        print("--- DEBUG END ---")
+        print('--- DEBUG END ---')
 
 
 class PostResource(resources.ModelResource):
@@ -89,27 +89,28 @@ class PostResource(resources.ModelResource):
 @admin.register(Post)
 class PostAdmin(ImportExportModelAdmin):
     resource_class = PostResource
-    list_display = ["title", "slug", "author", "publish", "status"]
-    list_filter = ["status", "created", "publish", "author"]
-    search_fields = ["title", "content"]
-    prepopulated_fields = {"slug": ("title",)}
-    raw_id_fields = ["author"]
-    date_hierarchy = "publish"
-    ordering = ["status", "publish"]
-    formfield_overrides = {models.TextField: {"widget": MDEditorWidget}}
-    autocomplete_fields = ["author"]
+    list_display = ['title', 'slug', 'author', 'publish', 'status']
+    list_filter = ['status', 'created', 'publish', 'author']
+    search_fields = ['title', 'content']
+    prepopulated_fields = {'slug': ('title',)}
+    raw_id_fields = ['author']
+    date_hierarchy = 'publish'
+    ordering = ['status', 'publish']
+    formfield_overrides = {models.TextField: {'widget': MDEditorWidget}}
+    autocomplete_fields = ['author']
 
+    @admin.display(description='Предпросмотр')
     def preview_tag(self, obj):
         if obj.preview:
             url = obj.preview.url
             return format_html('<a href="{}" target="_blank">Скачать</a>', url)
-        return "Нет файла"
+        return 'Нет файла'
 
-    preview_tag.short_description = "Предпросмотр"
+    preview_tag.short_description = 'Предпросмотр'  # type: ignore[attr-defined]
 
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ["name", "email", "post", "created", "active"]
-    list_filter = ["active", "created", "updated"]
-    search_fields = ["name", "email", "body"]
+    list_display = ['name', 'email', 'post', 'created', 'active']
+    list_filter = ['active', 'created', 'updated']
+    search_fields = ['name', 'email', 'body']

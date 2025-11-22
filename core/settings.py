@@ -16,7 +16,7 @@ from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
-dotenv_path = os.getenv("ENVIRONMENT_FILE")
+dotenv_path = os.getenv('ENVIRONMENT_FILE')
 load_dotenv(dotenv_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,78 +27,78 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = os.getenv("DEBUG")
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',')
 
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    "blog",
-    "taggit",
-    "mdeditor",
-    "django_minio_backend",
-    "django.contrib.sites",
-    "django.contrib.sitemaps",
-    "import_export",
-    "dbbackup",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'blog',
+    'taggit',
+    'mdeditor',
+    'django_minio_backend',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
+    'import_export',
+    'dbbackup',
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = "core.urls"
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "core.wsgi.application"
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
-if os.getenv("USE_POSTGRES_DB"):
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_PORT"),
+if os.getenv('USE_POSTGRES_DB'):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 
 
@@ -107,16 +107,16 @@ if os.getenv("USE_POSTGRES_DB"):
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -124,9 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -136,78 +136,78 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-X_FRAME_OPTIONS = "SAMEORIGIN"
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
-MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
-MINIO_USE_HTTPS = os.getenv("MINIO_USE_HTTPS", "False").lower() == "true"
-MINIO_MEDIA_BUCKET = os.getenv("MINIO_MEDIA_BUCKET", "django-media")
-MINIO_STATIC_BUCKET = os.getenv("MINIO_STATIC_BUCKET", "django-static")
-MINIO_EXTERNAL_ENDPOINT = os.getenv("MINIO_EXTERNAL_ENDPOINT", "localhost:9000")
+MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT', 'minio:9000')
+MINIO_ACCESS_KEY = os.getenv('MINIO_ACCESS_KEY')
+MINIO_SECRET_KEY = os.getenv('MINIO_SECRET_KEY')
+MINIO_USE_HTTPS = os.getenv('MINIO_USE_HTTPS', 'False').lower() == 'true'
+MINIO_MEDIA_BUCKET = os.getenv('MINIO_MEDIA_BUCKET', 'django-media')
+MINIO_STATIC_BUCKET = os.getenv('MINIO_STATIC_BUCKET', 'django-static')
+MINIO_EXTERNAL_ENDPOINT = os.getenv('MINIO_EXTERNAL_ENDPOINT', 'localhost:9000')
 
 STORAGES = {
-    "default": {
-        "BACKEND": "core.storage_backends.CustomMinioBackend",
-        "OPTIONS": {
-            "MINIO_ENDPOINT": MINIO_ENDPOINT,
-            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
-            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
-            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
-            "MINIO_PRIVATE_BUCKETS": [MINIO_MEDIA_BUCKET],
-            "MINIO_PUBLIC_BUCKETS": [MINIO_STATIC_BUCKET],
-            "MINIO_BUCKET_CHECK_ON_SAVE": True,
+    'default': {
+        'BACKEND': 'core.storage_backends.CustomMinioBackend',
+        'OPTIONS': {
+            'MINIO_ENDPOINT': MINIO_ENDPOINT,
+            'MINIO_ACCESS_KEY': MINIO_ACCESS_KEY,
+            'MINIO_SECRET_KEY': MINIO_SECRET_KEY,
+            'MINIO_USE_HTTPS': MINIO_USE_HTTPS,
+            'MINIO_PRIVATE_BUCKETS': [MINIO_MEDIA_BUCKET],
+            'MINIO_PUBLIC_BUCKETS': [MINIO_STATIC_BUCKET],
+            'MINIO_BUCKET_CHECK_ON_SAVE': True,
         },
     },
-    "staticfiles": {
-        "BACKEND": "core.storage_backends.CustomMinioBackendStatic",
-        "OPTIONS": {
-            "MINIO_ENDPOINT": MINIO_ENDPOINT,
-            "MINIO_ACCESS_KEY": MINIO_ACCESS_KEY,
-            "MINIO_SECRET_KEY": MINIO_SECRET_KEY,
-            "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
-            "MINIO_STATIC_FILES_BUCKET": MINIO_STATIC_BUCKET,
-            "MINIO_BUCKET_CHECK_ON_SAVE": True,
+    'staticfiles': {
+        'BACKEND': 'core.storage_backends.CustomMinioBackendStatic',
+        'OPTIONS': {
+            'MINIO_ENDPOINT': MINIO_ENDPOINT,
+            'MINIO_ACCESS_KEY': MINIO_ACCESS_KEY,
+            'MINIO_SECRET_KEY': MINIO_SECRET_KEY,
+            'MINIO_USE_HTTPS': MINIO_USE_HTTPS,
+            'MINIO_STATIC_FILES_BUCKET': MINIO_STATIC_BUCKET,
+            'MINIO_BUCKET_CHECK_ON_SAVE': True,
         },
     },
-    "dbbackup": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-        "OPTIONS": {
-            "location": "/backups",
+    'dbbackup': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        'OPTIONS': {
+            'location': '/backups',
         },
     },
 }
 
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8080",
-    "http://localhost:8080",
-    "http://0.0.0.0:8080",
-    "http://web:8000",
-    "http://minio:9000",
-    "http://minio:9001",
+    'http://127.0.0.1:8080',
+    'http://localhost:8080',
+    'http://0.0.0.0:8080',
+    'http://web:8000',
+    'http://minio:9000',
+    'http://minio:9001',
 ]
 
 CSRF_COOKIE_SECURE = False  # True in prod
 CSRF_COOKIE_HTTPONLY = False  # True in prod
 SESSION_COOKIE_SECURE = False  # True in prod
-CSRF_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "http")
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')
 
 CSRF_USE_SESSIONS = False
-CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_NAME = 'csrftoken'
 SITE_ID = 1
 
 if not DEBUG:
@@ -219,11 +219,11 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
 
 MINIO_CONFIG = {
-    "endpoint": os.getenv("MINIO_ENDPOINT"),
-    "access_key": os.getenv("MINIO_ACCESS_KEY"),
-    "secret_key": os.getenv("MINIO_SECRET_KEY"),
-    "secure": os.getenv("MINIO_USE_HTTPS", "False").lower() == "true",
+    'endpoint': os.getenv('MINIO_ENDPOINT'),
+    'access_key': os.getenv('MINIO_ACCESS_KEY'),
+    'secret_key': os.getenv('MINIO_SECRET_KEY'),
+    'secure': os.getenv('MINIO_USE_HTTPS', 'False').lower() == 'true',
 }
-for key in ["endpoint", "access_key", "secret_key"]:
+for key in ['endpoint', 'access_key', 'secret_key']:
     if not MINIO_CONFIG[key]:
-        raise ImproperlyConfigured(f"MinIO {key} must be set")
+        raise ImproperlyConfigured(f'MinIO {key} must be set')

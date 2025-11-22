@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from mdeditor.fields import MDTextField
 from taggit.managers import TaggableManager
 
+from blog.models.validators import validate_slug_no_spaces
 from blog.storages import get_private_storage
 from blog.utils.html_safety import safe_markdown_to_html, safe_text_to_html
 from blog.validators.file_validators import FileSizeValidator, validate_image_extension
@@ -13,19 +13,15 @@ from blog.validators.file_validators import FileSizeValidator, validate_image_ex
 
 class Post(models.Model):
     class Status(models.TextChoices):
-        DRAFT = "draft", "Draft"
-        PUBLISHED = "published", "Published"
-
-    def validate_slug(value):
-        if " " in value:
-            raise ValidationError("Slug не может содержать пробелы")
+        DRAFT = 'draft', 'Draft'
+        PUBLISHED = 'published', 'Published'
 
     title = models.CharField(max_length=250)
     slug = models.SlugField(
-        max_length=250, unique_for_date="publish", validators=[validate_slug]
+        max_length=250, unique_for_date='publish', validators=[validate_slug_no_spaces]
     )
     author = models.ForeignKey(
-        get_user_model(), on_delete=models.CASCADE, related_name="blog_posts"
+        get_user_model(), on_delete=models.CASCADE, related_name='blog_posts'
     )
 
     content = MDTextField()
@@ -46,13 +42,13 @@ class Post(models.Model):
             FileSizeValidator(max_size=5 * 1024 * 1024),  # 5MB
             validate_image_extension,
         ],
-        help_text="Разрешены файлы JPEG, PNG, GIF, BMP, WebP до 5MB",
+        help_text='Разрешены файлы JPEG, PNG, GIF, BMP, WebP до 5MB',
     )
 
     class Meta:
-        ordering = ["-publish"]
+        ordering = ['-publish']
         indexes = [
-            models.Index(fields=["-publish", "status"]),
+            models.Index(fields=['-publish', 'status']),
         ]
 
     def __str__(self):
@@ -60,12 +56,12 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            "blog:post_detail",
+            'blog:post_detail',
             kwargs={
-                "year": self.publish.year,
-                "month": self.publish.month,
-                "day": self.publish.day,
-                "post": self.slug,
+                'year': self.publish.year,
+                'month': self.publish.month,
+                'day': self.publish.day,
+                'post': self.slug,
             },
         )
 
@@ -79,12 +75,12 @@ class Post(models.Model):
         """
         Возвращает безопасный превью контента
         """
-        preview = self.content[:length] + ("..." if len(self.content) > length else "")
+        preview = self.content[:length] + ('...' if len(self.content) > length else '')
         return safe_text_to_html(preview)
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()
@@ -93,17 +89,17 @@ class Comment(models.Model):
     active = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ["created"]
+        ordering = ['created']
         indexes = [
-            models.Index(fields=["created"]),
+            models.Index(fields=['created']),
         ]
 
     def __str__(self):
-        return f"Comment by {self.name} on {self.post}"
+        return f'Comment by {self.name} on {self.post}'
 
     @classmethod
     def get_active_comments(cls):
-        return cls.objects.select_related("post").filter(active=True)
+        return cls.objects.select_related('post').filter(active=True)
 
     def get_safe_body(self):
         """

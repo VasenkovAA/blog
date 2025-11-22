@@ -1,0 +1,33 @@
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "Q", "S"]
+ignore = []
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv"]
+tests = ["B201", "B301"]
+skips = ["B101"]
+
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = ["mypy_django_plugin.main"]
+exclude = "blog/migrations"
+
+[tool.django-stubs]
+django_settings_module = "core.settings"

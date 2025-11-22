@@ -22,15 +22,15 @@ from django.urls import include, path
 from blog.sitemaps import PostSitemap
 
 sitemaps = {
-    "posts": PostSitemap,
+    'posts': PostSitemap,
 }
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("blog.urls")),
+    path('admin/', admin.site.urls),
+    path('', include('blog.urls')),
     path(
-        "sitemap.xml",
+        'sitemap.xml',
         sitemap,
-        {"sitemaps": sitemaps},
-        name="django.contrib.sitemaps.views.sitemap",
+        {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap',
     ),
 ]
