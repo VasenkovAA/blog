@@ -1,25 +1,69 @@
+:root {
+    /* Light theme (default) */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --text-primary: #2c3e50;
+    --text-secondary: #34495e;
+    --text-muted: #7f8c8d;
+    --accent-primary: #3498db;
+    --accent-secondary: #2980b9;
+    --border-color: #e9ecef;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --sidebar-bg: linear-gradient(135deg, #2c3e50, #34495e);
+    --sidebar-text: #ecf0f1;
+    --sidebar-subtext: #bdc3c7;
+    --code-bg: #f4f4f4;
+    --code-color: #e74c3c;
+}
+
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --text-primary: #ecf0f1;
+    --text-secondary: #bdc3c7;
+    --text-muted: #95a5a6;
+    --accent-primary: #3498db;
+    --accent-secondary: #2980b9;
+    --border-color: #404040;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    --sidebar-bg: linear-gradient(135deg, #34495e, #2c3e50);
+    --sidebar-text: #ecf0f1;
+    --sidebar-subtext: #bdc3c7;
+    --code-bg: #2d2d2d;
+    --code-color: #e74c3c;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--text-primary);
+    background: var(--bg-gradient);
     min-height: 100vh;
     padding: 20px;
 }
 
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+    max-width: min(1200px, 95%);
+    margin: 0 auto;
+}
+
 #content {
-    max-width: 800px;
-    margin: 0 auto 30px;
-    background: white;
-    padding: 40px;
+    background: var(--bg-primary);
+    padding: clamp(20px, 4vw, 40px);
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
 }
@@ -31,55 +75,54 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #3498db, #e74c3c, #3498db);
+    background: linear-gradient(90deg, var(--accent-primary), #e74c3c, var(--accent-primary));
 }
 
 #sidebar {
-    max-width: 800px;
-    margin: 0 auto;
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
-    padding: 30px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: clamp(20px, 4vw, 30px);
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow);
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    order: -1;
 }
 
 #sidebar h2 {
-    color: #ecf0f1;
+    color: var(--sidebar-text);
     margin-bottom: 15px;
-    font-size: 1.8em;
+    font-size: clamp(1.5em, 4vw, 1.8em);
     font-weight: 300;
     letter-spacing: 1px;
 }
 
 #sidebar p {
-    color: #bdc3c7;
-    font-size: 1.1em;
+    color: var(--sidebar-subtext);
+    font-size: clamp(1em, 3vw, 1.1em);
     line-height: 1.5;
 }
 
 h1 {
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 25px;
-    font-size: 2.5em;
-    border-bottom: 3px solid #3498db;
+    font-size: clamp(1.8em, 5vw, 2.5em);
+    border-bottom: 3px solid var(--accent-primary);
     padding-bottom: 15px;
     font-weight: 300;
     text-align: center;
 }
 
 h2 {
-    color: #34495e;
+    color: var(--text-secondary);
     margin: 30px 0 20px 0;
-    font-size: 1.8em;
+    font-size: clamp(1.4em, 4vw, 1.8em);
     font-weight: 400;
 }
 
 h2 a {
     text-decoration: none;
-    color: #2980b9;
+    color: var(--accent-secondary);
     transition: all 0.3s ease;
     border-bottom: 2px solid transparent;
 }
@@ -90,13 +133,13 @@ h2 a:hover {
 }
 
 .date {
-    color: #7f8c8d;
+    color: var(--text-muted);
     font-style: italic;
     margin-bottom: 25px;
     font-size: 0.95em;
-    border-left: 3px solid #3498db;
+    border-left: 3px solid var(--accent-primary);
     padding-left: 15px;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     padding: 10px 15px;
     border-radius: 5px;
 }
@@ -104,16 +147,17 @@ h2 a:hover {
 p {
     margin-bottom: 20px;
     text-align: justify;
-    font-size: 1.05em;
+    font-size: clamp(1em, 2.5vw, 1.05em);
+    color: var(--text-primary);
 }
 
 /* Comment Styles */
 .comment {
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     padding: 20px;
     margin: 20px 0;
     border-radius: 10px;
-    border-left: 4px solid #3498db;
+    border-left: 4px solid var(--accent-primary);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
@@ -123,11 +167,11 @@ p {
 }
 
 .comment .info {
-    color: #7f8c8d;
+    color: var(--text-muted);
     font-size: 0.9em;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .comment .info::before {
@@ -137,15 +181,15 @@ p {
 
 /* Form Styles */
 form {
-    background: #f8f9fa;
-    padding: 30px;
+    background: var(--bg-secondary);
+    padding: clamp(20px, 4vw, 30px);
     border-radius: 10px;
     margin-top: 30px;
-    border: 2px dashed #bdc3c7;
+    border: 2px dashed var(--border-color);
 }
 
 form h2 {
-    color: #2c3e50;
+    color: var(--text-primary);
     margin-bottom: 25px;
     text-align: center;
 }
@@ -158,7 +202,7 @@ form label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--text-primary);
 }
 
 form input[type="text"],
@@ -166,23 +210,25 @@ form input[type="email"],
 form textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1em;
     transition: border-color 0.3s ease;
     font-family: inherit;
+    background: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 form input[type="text"]:focus,
 form input[type="email"]:focus,
 form textarea:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--accent-primary);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 form input[type="submit"] {
-    background: linear-gradient(135deg, #3498db, #2980b9);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
     border: none;
     padding: 15px 30px;
@@ -212,27 +258,28 @@ form input[type="submit"]:hover {
 }
 
 .pagination a {
-    color: #3498db;
+    color: var(--accent-primary);
     padding: 12px 20px;
     text-decoration: none;
-    border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     margin: 0 5px;
     transition: all 0.3s ease;
     font-weight: 600;
+    background: var(--bg-primary);
 }
 
 .pagination a:hover {
-    background: linear-gradient(135deg, #3498db, #2980b9);
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
-    border-color: #3498db;
+    border-color: var(--accent-primary);
     transform: translateY(-2px);
 }
 
 .current {
     padding: 12px 20px;
-    background: #2c3e50;
-    color: white;
+    background: var(--text-primary);
+    color: var(--bg-primary);
     border-radius: 8px;
     margin: 0 5px;
     font-weight: 600;
@@ -273,7 +320,7 @@ form input[type="submit"]:hover {
 /* Post Content */
 .post-body {
     line-height: 1.8;
-    font-size: 1.1em;
+    font-size: clamp(1em, 2.5vw, 1.1em);
 }
 
 .post-body img {
@@ -285,27 +332,46 @@ form input[type="submit"]:hover {
 }
 
 pre {
-    background: #2d2d2d;
+    background: var(--code-bg);
     color: #f8f8f2;
     padding: 20px;
     border-radius: 10px;
     overflow-x: auto;
     margin: 20px 0;
-    border-left: 4px solid #3498db;
+    border-left: 4px solid var(--accent-primary);
 }
 
 code {
-    background: #f4f4f4;
+    background: var(--code-bg);
     padding: 3px 6px;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
-    color: #e74c3c;
+    color: var(--code-color);
+}
+
+/* Tags */
+.tags {
+    margin: 15px 0;
+}
+
+.tags a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
+}
+
+.tags a:hover {
+    background: var(--accent-primary);
+    color: white;
 }
 
 /* Empty State */
 .empty-state {
     text-align: center;
-    color: #7f8c8d;
+    color: var(--text-muted);
     padding: 40px;
     font-style: italic;
 }
@@ -317,23 +383,58 @@ code {
     margin-bottom: 10px;
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
+    .container {
+        grid-template-columns: 3fr 1fr;
+        gap: 40px;
+    }
+
+    #sidebar {
+        order: 0;
+        align-self: start;
+        position: sticky;
+        top: 20px;
+    }
+
+    .theme-toggle {
+        top: 30px;
+        right: 30px;
+    }
+}
+
+@media (max-width: 767px) {
     body {
         padding: 10px;
     }
 
-    #content {
-        padding: 25px;
-        margin-bottom: 20px;
-    }
-
-    h1 {
-        font-size: 2em;
-    }
-
-    h2 {
-        font-size: 1.5em;
+    .container {
+        gap: 20px;
     }
 
     .pagination a {
@@ -349,11 +450,19 @@ code {
     .comment {
         padding: 15px;
     }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1em;
+    }
 }
 
 @media (max-width: 480px) {
     #content {
-        padding: 20px 15px;
+        padding: 15px;
     }
 
     h1 {

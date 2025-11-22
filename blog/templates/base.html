@@ -14,13 +14,51 @@
         <link href="{% static 'css/blog.css' %}" rel="stylesheet">
     </head>
     <body>
-        <div id="content">
-            {% block content %}
-            {% endblock content %}
+        <div class="container">
+            <div id="content">
+                {% block content %}
+                {% endblock content %}
+            </div>
+            <div id="sidebar">
+                <h2>Let's code together</h2>
+                <p>Портал с полезными заметками и интересными работами</p>
+            </div>
         </div>
-        <div id="sidebar">
-            <h2>Let's code together</h2>
-            <p>Портал с полезными заметками и интересными работами</p>
-        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        <script>
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // Обновляем иконку кнопки
+    const button = document.querySelector('.theme-toggle');
+    button.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+}
+
+// Загружаем сохраненную тему или определяем системные предпочтения
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    let theme = 'light';
+    if (savedTheme) {
+        theme = savedTheme;
+    } else if (systemPrefersDark) {
+        theme = 'dark';
+    }
+
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // Устанавливаем правильную иконку
+    const button = document.querySelector('.theme-toggle');
+    button.textContent = theme === 'dark' ? '🌞' : '🌙';
+}
+
+// Инициализируем тему при загрузке
+initTheme();
+        </script>
     </body>
 </html>
