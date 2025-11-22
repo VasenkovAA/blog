@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     "django_minio_backend",
     "django.contrib.sites",
     "django.contrib.sitemaps",
+    "import_export",
+    "dbbackup",
 ]
 
 MIDDLEWARE = [
@@ -173,6 +175,12 @@ STORAGES = {
             "MINIO_USE_HTTPS": MINIO_USE_HTTPS,
             "MINIO_STATIC_FILES_BUCKET": MINIO_STATIC_BUCKET,
             "MINIO_BUCKET_CHECK_ON_SAVE": True,
+        },
+    },
+    "dbbackup": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "/backups",
         },
     },
 }
