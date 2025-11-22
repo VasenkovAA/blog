@@ -16,6 +16,6 @@ class Command(BaseCommand):
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Successfully {'created' if created else 'updated'} site: {site.name}"
+                f'Successfully {"created" if created else "updated"} site: {site.name}'
             )
         )
