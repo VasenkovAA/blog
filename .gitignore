@@ -213,3 +213,5 @@ auto/
 
 .env.dev
 .env.prod
+
+backups/

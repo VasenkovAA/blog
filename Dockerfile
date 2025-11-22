@@ -19,6 +19,7 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     locales \
     curl \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/* \
     && echo "ru_RU.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen ru_RU.UTF-8
@@ -35,14 +36,16 @@ COPY --from=builder /install /usr/local
 
 COPY --chown=app:app . .
 
+RUN mkdir -p /backups && chown -R app:app /backups
+
 USER app
 
-RUN python -c "import django; print(f'✅ Django {django.__version__}')" && \
-    python -c "import requests; print('✅ Requests installed')" && \
-    python -c "import minio; print('✅ MinIO client installed')"
+RUN python -c "import django; print(f'Django {django.__version__}')" && \
+    python -c "import requests; print('Requests installed')" && \
+    python -c "import minio; print('MinIO client installed')"
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health/ || exit 1
+    CMD curl -f http://web:8000/health/ || exit 1
 
 EXPOSE 8000
 

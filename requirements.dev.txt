@@ -75,3 +75,5 @@ virtualenv==20.35.4
 webencodings==0.5.1
 xai-review==0.41.0
 requests>=2.25.0
+django-import-export
+django-dbbackup
