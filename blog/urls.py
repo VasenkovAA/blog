@@ -2,16 +2,16 @@ from django.urls import path
 
 from blog.views.post import post_comment, post_detail, post_list
 
-app_name = "blog"
+app_name = 'blog'
 
 urlpatterns = [
     # path("", index, name="index"),
-    path("", post_list, name="post_list"),
+    path('', post_list, name='post_list'),
     path(
-        "<int:year>/<int:month>/<int:day>/<slug:post>/",
+        '<int:year>/<int:month>/<int:day>/<slug:post>/',
         post_detail,
-        name="post_detail",
+        name='post_detail',
     ),
-    path("<int:post_id>/comment/", post_comment, name="post_comment"),
-    path("tag/<slug:tag_slug>/", post_list, name="post_list_by_tag"),
+    path('<int:post_id>/comment/', post_comment, name='post_comment'),
+    path('tag/<slug:tag_slug>/', post_list, name='post_list_by_tag'),
 ]

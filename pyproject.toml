@@ -27,6 +27,7 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 warn_unused_configs = true
 plugins = ["mypy_django_plugin.main"]
+exclude = "blog/migrations"
 
 [tool.django-stubs]
 django_settings_module = "core.settings"

@@ -1,7 +1,7 @@
-import markdown
 from django import template
 from django.template.defaultfilters import stringfilter
-from django.utils.safestring import mark_safe
+
+from blog.utils.html_safety import safe_markdown_to_html
 
 register = template.Library()
 
@@ -9,4 +9,4 @@ register = template.Library()
 @register.filter
 @stringfilter
 def render_markdown(value):
-    return mark_safe(markdown.markdown(value, extensions=["fenced_code"]))
+    return safe_markdown_to_html(value)

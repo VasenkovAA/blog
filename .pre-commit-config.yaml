@@ -24,9 +24,10 @@ repos:
     rev: v1.10.0
     hooks:
       - id: mypy
+        entry: venv/bin/mypy
         additional_dependencies: [
-            "django-stubs",
-            "djangorestframework-stubs"
+          "django-stubs",
+          "djangorestframework-stubs"
         ]
         args: ["--ignore-missing-imports"]
 
