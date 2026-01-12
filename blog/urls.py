@@ -1,5 +1,6 @@
 from django.urls import path
 
+from blog.views.other_views import about_me
 from blog.views.post import post_comment, post_detail, post_list
 
 app_name = 'blog'
@@ -14,4 +15,5 @@ urlpatterns = [
     ),
     path('<int:post_id>/comment/', post_comment, name='post_comment'),
     path('tag/<slug:tag_slug>/', post_list, name='post_list_by_tag'),
+    path('about_me', about_me, name='about_me'),
 ]
